@@ -1,0 +1,41 @@
+on:
+  workflow_call:
+    inputs:
+      package_name:
+        required: true
+        type: string
+
+jobs:
+  qusb2nes-git:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up SSH key for external repository
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts
+
+      - name: Clone external repository
+        run: |
+          git clone ssh://aur@aur.archlinux.org/${{ inputs.package_name }}.git
+
+      - name: Install makepkg
+        run: sudo apt-get makepkg
+
+      - name: Update PKGBUILD
+        run: |
+          makepkg --nobuild
+          makepkg --printsrcinfo > .SRCINFO
+        working-directory: ${ { inputs.package_name } }
+
+      - name: Push to AUR
+        uses: KSXGitHub/github-actions-deploy-aur@v4.1.1
+        with:
+          pkgname: ${{ inputs.package_name }}
+          pkgbuild: ${{ inputs.package_name }}/PKGBUILD
+          commit_username: ${{ secrets.AUR_USERNAME }}
+          commit_email: ${{ secrets.AUR_EMAIL }}
+          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+          commit_message: Update AUR package
+          ssh_keyscan_types: rsa,ecdsa,ed25519
