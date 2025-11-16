@@ -2,88 +2,83 @@ name: Linux Build
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build_nogui:
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Install Qt
-        run: sudo apt-get update && sudo apt-get install qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools libqt5serialport5-dev libqt5websockets5-dev 
-        
-      - uses: actions/checkout@v2
-        with:
-          submodules: true
-      
-      - name: qmake NOGUI
-        run: qmake QUSB2SNES_NOGUI=1 CONFIG+='release'
-        
-      - name: make
-        run: make
-        
-      - name: check no libQt5Gui.so/libGL.so
-        run: ldd QUsb2Snes  | ( ! grep --silent -e "libQt5Gui\.so" -e "libGL\.so" ) 
-
-  build_gui:
-
     runs-on: ubuntu-latest
 
     steps:
       - name: Install Qt
         run: sudo apt-get update && sudo apt-get install qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools libqt5serialport5-dev libqt5websockets5-dev
-        
+
       - uses: actions/checkout@v2
         with:
           submodules: true
-          
-      
-      - name: qmake
-        run: qmake CONFIG+='release'
-        
+
+      - name: qmake NOGUI
+        run: qmake QUSB2SNES_NOGUI=1 CONFIG+='release'
+
       - name: make
         run: make
-        
+
+      - name: check no libQt5Gui.so/libGL.so
+        run: ldd QUsb2Snes  | ( ! grep --silent -e "libQt5Gui\.so" -e "libGL\.so" )
+
+  build_gui:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install Qt
+        run: sudo apt-get update && sudo apt-get install qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools libqt5serialport5-dev libqt5websockets5-dev
+
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: qmake
+        run: qmake CONFIG+='release'
+
+      - name: make
+        run: make
+
       - name: check libQt5Gui.so/libGL.so
         run: ldd QUsb2Snes  | grep --silent -e "libQt5Gui\.so" -e "libGL\.so"
 
   build_file2snes:
-      
     runs-on: ubuntu-latest
 
     steps:
       - name: Install Qt
         run: sudo apt-get update && sudo apt-get install qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools libqt5serialport5-dev libqt5websockets5-dev
-        
+
       - uses: actions/checkout@v2
         with:
           submodules: true
-      
+
       - name: qmake
         working-directory: QFile2Snes
         run: qmake CONFIG+='release'
-        
+
       - name: make
         working-directory: QFile2Snes
         run: make
 
   build_clazy:
-
     runs-on: ubuntu-latest
 
     steps:
       - name: Install Qt
         run: sudo apt-get update && sudo apt-get install qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools libqt5serialport5-dev libqt5websockets5-dev clazy
-        
+
       - uses: actions/checkout@v2
         with:
           submodules: true
-      
+
       - name: qmake clazy
         run: qmake -spec linux-clang QMAKE_CXX="clazy" CONFIG+='release'
-        
+
       - name: make
         run: make

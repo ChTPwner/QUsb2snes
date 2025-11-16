@@ -1,3 +1,5 @@
+name: aur-qusb2snes-git update
+
 on:
   push:
     branches: [master]
@@ -6,7 +8,7 @@ on:
 
 jobs:
   aur-qusb2snes-git:
-    uses: .github/workflows/aur-workflow.yml
+    uses: ./.github/workflows/aur-workflow.yml
     with:
       package_name: qusb2snes-git
     secrets: inherit
