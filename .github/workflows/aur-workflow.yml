@@ -8,7 +8,7 @@ name: Archlinux package
 on:
   push:
     branches:
-      - feat/arch-build
+      - arch-build
       - master
     tags:
       - "*"
