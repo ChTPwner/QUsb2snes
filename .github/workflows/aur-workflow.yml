@@ -1,9 +1,22 @@
+# on:
+#   workflow_call:
+#     inputs:
+#       package_name:
+#         required: true
+#         type: string
 on:
-  workflow_call:
-    inputs:
-      package_name:
-        required: true
-        type: string
+  push:
+    branches:
+      - feat/arch-build
+      - master
+    tags:
+      - "*"
+  pull_request:
+    branches: [master]
+
+env:
+  package_name: qusb2snes
+
 
 jobs:
   update_package:
