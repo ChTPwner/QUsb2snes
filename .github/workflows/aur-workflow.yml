@@ -37,9 +37,9 @@ jobs:
         run: |
           PKGBUILD_PATH="PKGBUILD"
           sed -E -i.bak "s/^([[:space:]]*)(pkgver)[[:space:]]*=[[:space:]]*.*/\1\2=${{github.ref_name}}/" $PKGBUILD_PATH
-          if grep -q "^[[:space:]]*pkgver=${NEW_PKGVER}" "$PKGBUILD_PATH"; then
+          if grep -q "^[[:space:]]*pkgver=${{github.ref_name}}" "$PKGBUILD_PATH"; then
             rm -f "${PKGBUILD_PATH}.bak"
-            echo "Updated $PKGBUILD_PATH: pkgver=${NEW_PKGVER}"
+            echo "Updated $PKGBUILD_PATH: pkgver=${{github.ref_name}}"
           else
             echo "Error: failed to update pkgver in $PKGBUILD_PATH" >&2
             echo "Backup saved as ${PKGBUILD_PATH}.bak" >&2
@@ -51,9 +51,9 @@ jobs:
         run: |
           SRCINFO_PATH=".SRCINFO"
           sed -E -i.bak "s/^([[:space:]]*)(pkgver)[[:space:]]*=[[:space:]]*.*/\1\2=${{github.ref_name}}/" "$SRCINFO_PATH"
-          if grep -q "^[[:space:]]*pkgver=${NEW_PKGVER}" "$SRCINFO_PATH"; then
+          if grep -q "^[[:space:]]*pkgver=${{github.ref_name}}" "$SRCINFO_PATH"; then
             rm -f "${SRCINFO_PATH}.bak"
-            echo "Updated $SRCINFO_PATH: pkgver=${NEW_PKGVER}"
+            echo "Updated $SRCINFO_PATH: pkgver=${{github.ref_name}}"
             exit 0
           else
             echo "Error: failed to update pkgver in $SRCINFO_PATH" >&2
