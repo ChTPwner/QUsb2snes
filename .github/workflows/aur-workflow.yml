@@ -40,6 +40,7 @@ jobs:
           if grep -q "^[[:space:]]*pkgver=${{github.ref_name}}" "$PKGBUILD_PATH"; then
             rm -f "${PKGBUILD_PATH}.bak"
             echo "Updated $PKGBUILD_PATH: pkgver=${{github.ref_name}}"
+            cat "$PKGBUILD_PATH"
           else
             echo "Error: failed to update pkgver in $PKGBUILD_PATH" >&2
             echo "Backup saved as ${PKGBUILD_PATH}.bak" >&2
@@ -54,7 +55,7 @@ jobs:
           if grep -q "^[[:space:]]*pkgver=${{github.ref_name}}" "$SRCINFO_PATH"; then
             rm -f "${SRCINFO_PATH}.bak"
             echo "Updated $SRCINFO_PATH: pkgver=${{github.ref_name}}"
-            exit 0
+            cat "$SRCINFO_PATH"
           else
             echo "Error: failed to update pkgver in $SRCINFO_PATH" >&2
             echo "Backup saved as ${SRCINFO_PATH}.bak" >&2
