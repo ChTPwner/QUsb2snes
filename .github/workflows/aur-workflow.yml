@@ -1,3 +1,4 @@
+name: Archlinux package
 # on:
 #   workflow_call:
 #     inputs:
@@ -31,7 +32,7 @@ jobs:
 
       - name: Clone external repository
         run: |
-          git clone ssh://aur@aur.archlinux.org/${{  }}.git
+          git clone ssh://aur@aur.archlinux.org/${{ env.package_name }}.git
 
       - name: Update PKGBUILD and .SRCINFO
         run: |
@@ -45,7 +46,7 @@ jobs:
             echo "Backup saved as ${PKGBUILD_PATH}.bak" >&2
             exit 3
           fi
-        working-directory: ${{ inputs.package_name }}
+        working-directory: ${{ env.package_name }}
 
       - name: Update .SRCINFO
         run: |
@@ -60,7 +61,7 @@ jobs:
             echo "Backup saved as ${SRCINFO_PATH}.bak" >&2
             exit 3
           fi
-        working-directory: ${{ inputs.package_name }}
+        working-directory: ${{ env.package_name }}
 
       # - name: Push to AUR
       #   uses: KSXGitHub/github-actions-deploy-aur@v4.1.1
